@@ -1,0 +1,46 @@
+{
+  "name": "empty-project-template",
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "lint": "tslint './src/**/*.{ts,tsx}'",
+    "format": "tslint './src/**/*.{ts,tsx}' --fix",
+    "precommit": "lint-staged"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "lint-staged": {
+    "./src/**/*.{ts,tsx}": [
+      "npm run format",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "expo": "^30.0.1",
+    "react": "16.3.1",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-elements": "^0.19.1",
+    "recompose": "^0.30.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.4.14",
+    "@types/react-native": "^0.56.23",
+    "@types/react-native-elements": "^0.18.0",
+    "@types/recompose": "^0.26.5",
+    "husky": "^1.0.0-rc.15",
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.14.3",
+    "react-native-typescript-transformer": "^1.2.10",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-plugin-prettier": "^2.0.0",
+    "typescript": "^3.0.3",
+    "utility-types": "^2.1.0"
+  }
+}
