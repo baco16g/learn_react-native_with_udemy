@@ -132,8 +132,8 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
     position: new Animated.ValueXY()
   }),
 
-  withHandlers({
-    getCardStyle: ({ position }: IWithPositionProp) => () => {
+  withHandlers<IOuterProps & IWithStateHandlers & IWithPositionProp, {}>({
+    getCardStyle: ({ position }) => () => {
       const rotate = position.x.interpolate({
         inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
         outputRange: ['-120deg', '0deg', '120deg']
@@ -143,14 +143,17 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
         transform: [{ rotate }]
       }
     },
-    resetPosition: ({ position }: IWithPositionProp) => () => {
+    resetPosition: ({ position }) => () => {
       Animated.spring(position, {
         toValue: { x: 0, y: 0 }
       }).start()
     }
   }),
 
-  withHandlers({
+  withHandlers<
+    IOuterProps & IWithStateHandlers & IWithPositionProp & IWithDefaultHandlers,
+    {}
+  >({
     onSwipeComplete: ({
       data,
       position,
@@ -158,9 +161,7 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
       incrementIndex,
       onSwipeLeft,
       onSwipeRight
-    }: IOuterProps & IWithPositionProp & IWithStateHandlers) => (
-      direction: string
-    ) => {
+    }) => (direction: string) => {
       const item = data[currentIndex]
       direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item)
       position.setValue({ x: 0, y: 0 })
@@ -168,13 +169,15 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
     }
   }),
 
-  withHandlers({
-    forceSwipe: ({
-      position,
-      onSwipeComplete
-    }: IWithPositionProp & IWithOnSwipeCompleteHandler) => (
-      direction: string
-    ) => {
+  withHandlers<
+    IOuterProps &
+      IWithStateHandlers &
+      IWithPositionProp &
+      IWithDefaultHandlers &
+      IWithOnSwipeCompleteHandler,
+    {}
+  >({
+    forceSwipe: ({ position, onSwipeComplete }) => (direction: string) => {
       const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH
       Animated.timing(position, {
         toValue: { x, y: 0 },
@@ -183,31 +186,33 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
     }
   }),
 
-  withProps(
-    ({
-      position,
-      resetPosition,
-      forceSwipe
-    }: IWithPositionProp & IWithHandlers) => ({
-      panResponder: PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderMove: (event, gesture) => {
-          const { dx } = gesture
-          position.setValue({ x: dx, y: 0 })
-        },
-        onPanResponderRelease: (event, gesture) => {
-          const { dx } = gesture
-          if (dx > SWIPE_THRESHOLD) {
-            forceSwipe('right')
-          } else if (dx < -SWIPE_THRESHOLD) {
-            forceSwipe('left')
-          } else {
-            resetPosition()
-          }
+  withProps<
+    IPanResponderProp,
+    IOuterProps &
+      IWithStateHandlers &
+      IWithPositionProp &
+      IWithDefaultHandlers &
+      IWithOnSwipeCompleteHandler &
+      IWithForceSwipeHandler
+  >(({ position, resetPosition, forceSwipe }) => ({
+    panResponder: PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (event, gesture) => {
+        const { dx } = gesture
+        position.setValue({ x: dx, y: 0 })
+      },
+      onPanResponderRelease: (event, gesture) => {
+        const { dx } = gesture
+        if (dx > SWIPE_THRESHOLD) {
+          forceSwipe('right')
+        } else if (dx < -SWIPE_THRESHOLD) {
+          forceSwipe('left')
+        } else {
+          resetPosition()
         }
-      })
+      }
     })
-  ),
+  })),
 
   lifecycle<IProps, IOuterProps>({
     componentWillUpdate() {
