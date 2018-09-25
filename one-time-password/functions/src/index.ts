@@ -1,8 +1,12 @@
-import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin'
+import * as functions from 'firebase-functions'
+import * as serviceAccount from '../service_account.json'
+import * as config from '../config.json'
+import * as handler from './handlers'
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: config.firebase.databaseURL
+});
+
+export const createUser = functions.https.onRequest(handler.createUser)
