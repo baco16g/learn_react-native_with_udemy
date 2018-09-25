@@ -1,4 +1,6 @@
 {
+  "rulesDirectory": ["tslint-plugin-prettier"],
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
     // -- Strict errors --
     // These lint rules are likely always a good idea.

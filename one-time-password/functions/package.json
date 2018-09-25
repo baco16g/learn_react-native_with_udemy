@@ -2,6 +2,7 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
+    "format": "tslint --fix --project tsconfig.json",
     "build": "tsc",
     "serve": "npm run build && firebase serve --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -19,7 +20,10 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/twilio": "^0.0.9",
+    "prettier": "^1.14.3",
     "tslint": "~5.8.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-plugin-prettier": "^2.0.0",
     "typescript": "~2.8.3"
   },
   "private": true
