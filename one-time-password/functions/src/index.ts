@@ -10,3 +10,4 @@ admin.initializeApp({
 });
 
 export const createUser = functions.https.onRequest(handler.createUser)
+export const requestOneTimePassword = functions.https.onRequest(handler.requestOneTimePassword)
