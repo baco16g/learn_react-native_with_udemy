@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import * as admin from 'firebase-admin'
-import twilio from '../twilio'
 import * as config from '../../config.json'
+import twilio from '../twilio'
 
 const requestOneTimePassword = async (req: Request, res: Response) => {
   if (!req.body.phone) {
@@ -20,15 +20,15 @@ const requestOneTimePassword = async (req: Request, res: Response) => {
   await twilio.messages
     .create({
       body: `Your code is ${code}`,
-      to: phone,
-      from: config.twilio.phone
+      from: config.twilio.phone,
+      to: phone
     })
     .catch(err => res.status(422).send(err))
 
   await admin
     .database()
     .ref(`users/${phone}`)
-    .update({ code: code, codeValid: true })
+    .update({ code, codeValid: true })
     .catch(err => res.status(422).send(err))
 
   return res.send({ success: true })

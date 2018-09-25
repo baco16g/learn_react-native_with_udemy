@@ -7,7 +7,7 @@ const velifyOneTimePassword = async (req: Request, res: Response) => {
   }
 
   const phone = `+81${String(req.body.phone).replace(/[^\d]/g, '')}`
-  const code = parseInt(req.body.code)
+  const code = parseInt(req.body.code, 10)
 
   await admin
     .auth()
