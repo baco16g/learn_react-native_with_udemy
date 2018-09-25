@@ -9,9 +9,11 @@
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src",
+    "./typings/"
   ],
   "typeRoots": [
+    "typings",
     "node_modules/@types"
   ]
 }
