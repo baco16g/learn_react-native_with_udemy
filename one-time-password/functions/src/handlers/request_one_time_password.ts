@@ -10,7 +10,6 @@ const requestOneTimePassword = async (req: Request, res: Response) => {
 
   const phone = `+81${String(req.body.phone).replace(/[^\d]/g, '')}`
 
-
   await admin
     .auth()
     .getUser(phone)
