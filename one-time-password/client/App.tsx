@@ -1,9 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import SignUpForm from './src/components/SignUpForm'
 
 const App = () => (
   <View style={styles.container}>
-    <Text>Open up App.js to start working on your app!</Text>
+    <SignUpForm />
   </View>
 )
 
@@ -15,3 +16,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
+
+export default App
