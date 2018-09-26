@@ -8,8 +8,7 @@
     "ios": "expo start --ios",
     "eject": "expo eject",
     "lint": "tslint './src/**/*.{ts,tsx}'",
-    "format": "tslint './src/**/*.{ts,tsx}' --fix",
-    "precommit": "lint-staged"
+    "format": "tslint './src/**/*.{ts,tsx}' --fix"
   },
   "prettier": {
     "semi": false,
@@ -20,6 +19,11 @@
       "npm run format",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "dependencies": {
     "axios": "^0.18.0",
