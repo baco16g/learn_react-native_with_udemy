@@ -7,3 +7,4 @@ server/functions/config.json
 client/node_modules/
 client/.expo/*
 client/npm-debug.*
+client/config.json
