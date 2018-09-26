@@ -3,3 +3,7 @@ server/functions/node_modules/
 server/functions/lib
 server/functions/service_account.json
 server/functions/config.json
+
+client/node_modules/
+client/.expo/*
+client/npm-debug.*
