@@ -1,5 +1,5 @@
-.firebase
-functions/node_modules/
-functions/lib
-functions/service_account.json
-functions/config.json
+server/.firebase
+server/functions/node_modules/
+server/functions/lib
+server/functions/service_account.json
+server/functions/config.json
