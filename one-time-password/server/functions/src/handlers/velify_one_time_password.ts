@@ -6,7 +6,7 @@ const velifyOneTimePassword = async (req: Request, res: Response) => {
     return res.status(422).send({ error: 'Phone and code must be provided' })
   }
 
-  const phone = `+81${String(req.body.phone).replace(/[^\d]/g, '')}`
+  const phone = `+81${String(+req.body.phone).replace(/[^\d]/g, '')}`
   const code = parseInt(req.body.code, 10)
 
   await admin

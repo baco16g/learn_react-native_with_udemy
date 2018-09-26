@@ -8,7 +8,7 @@ const requestOneTimePassword = async (req: Request, res: Response) => {
     return res.status(422).send({ error: 'You must provide a phone number' })
   }
 
-  const phone = `+81${String(req.body.phone).replace(/[^\d]/g, '')}`
+  const phone = `+81${String(+req.body.phone).replace(/[^\d]/g, '')}`
 
   await admin
     .auth()

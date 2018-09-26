@@ -8,7 +8,7 @@ const createUser = async (req: Request, res: Response) => {
   }
 
   // Format the phone number to remove dashed and parens
-  const phone = `+81${String(req.body.phone).replace(/[^\d]/g, '')}`
+  const phone = `+81${String(+req.body.phone).replace(/[^\d]/g, '')}`
 
   // Create a new user account using that phone number
   const user = await admin
