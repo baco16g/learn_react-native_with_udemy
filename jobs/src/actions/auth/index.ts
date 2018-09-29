@@ -3,7 +3,7 @@ import { Facebook } from 'expo'
 import { Dispatch } from 'redux'
 
 import * as asyncActions from './async'
-import * as config from '../../config.json'
+import * as config from '../../../config.json'
 
 export const facebookLogin = () => async (dispatch: Dispatch) => {
   const token = await AsyncStorage.getItem('fb_token')
