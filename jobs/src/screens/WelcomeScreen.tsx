@@ -1,24 +1,41 @@
 import * as React from 'react'
-import { View, Text } from 'react-native'
-import { compose, ComponentEnhancer, withProps, withHandlers } from 'recompose'
+import { View, Text, AsyncStorage } from 'react-native'
+import {
+  compose,
+  ComponentEnhancer,
+  withState,
+  withProps,
+  withHandlers,
+  lifecycle
+} from 'recompose'
 import { NavigationScreenProp } from 'react-navigation'
+import { AppLoading } from 'expo'
+import _ from 'lodash'
 import Slides, { IData } from '../components/Slides'
 
 type Props = {
   slideData: IData[]
-} & IHandlers
+} & IState &
+  IHandlers
 
 interface IOuterProps {
   navigation: NavigationScreenProp<any>
+}
+
+interface IState {
+  hasToken: boolean | null
 }
 
 interface IHandlers {
   onSlideComplete: () => void
 }
 
-const WelcomeScreen = ({ slideData, onSlideComplete }: Props) => (
-  <Slides data={slideData} onComplete={onSlideComplete} />
-)
+const WelcomeScreen = ({ slideData, hasToken, onSlideComplete }: Props) =>
+  _.isNull(hasToken) ? (
+    <AppLoading />
+  ) : (
+    <Slides data={slideData} onComplete={onSlideComplete} />
+  )
 
 const enhancer: ComponentEnhancer<Props, IOuterProps> = compose(
   withProps<{}, {}>({
@@ -37,9 +54,20 @@ const enhancer: ComponentEnhancer<Props, IOuterProps> = compose(
       }
     ]
   }),
+  withState('hasToken', '', null),
   withHandlers<IOuterProps, {}>({
     onSlideComplete: ({ navigation }) => () => {
       navigation.navigate('auth')
+    }
+  }),
+  lifecycle<IOuterProps & IState & IHandlers, {}>({
+    async componentWillMount() {
+      const token = await AsyncStorage.getItem('fb_token')
+      if (token) {
+        this.props.navigation.navigate('auth')
+      } else {
+        this.setState({ token: false })
+      }
     }
   })
 )
