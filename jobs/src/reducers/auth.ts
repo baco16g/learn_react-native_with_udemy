@@ -1,6 +1,4 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers'
-import { $Call } from 'utility-types'
-import * as actions from '../actions/auth'
 import * as asyncActions from '../actions/auth/async'
 
 export interface IState {
