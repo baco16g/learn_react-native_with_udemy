@@ -2,16 +2,34 @@ import { AsyncStorage } from 'react-native'
 import { Facebook } from 'expo'
 import { Dispatch } from 'redux'
 
+import * as asyncActions from './async'
 import * as config from '../../config.json'
-import { FACEBOOK_LOGIN_SUCCESS, FACEBOOK_LOGIN_FAIL } from './types'
 
 export const facebookLogin = () => async (dispatch: Dispatch) => {
   const token = await AsyncStorage.getItem('fb_token')
   if (token) {
-    dispatch({ type: FACEBOOK_LOGIN_SUCCESS, payload: token })
+    sucessFacebookLogin(dispatch, token)
   } else {
-    await doFacebookLogin(dispatch)
+    doFacebookLogin(dispatch)
   }
+}
+
+const sucessFacebookLogin = (dispatch: Dispatch, token: string) => {
+  dispatch(
+    asyncActions.facebookLogin.done({
+      params: null,
+      result: { token }
+    })
+  )
+}
+
+const failFacebookLogin = (dispatch: Dispatch) => {
+  dispatch(
+    asyncActions.facebookLogin.failed({
+      params: null,
+      error: ''
+    })
+  )
 }
 
 const doFacebookLogin = async (dispatch: Dispatch) => {
@@ -23,10 +41,10 @@ const doFacebookLogin = async (dispatch: Dispatch) => {
   )
 
   if (type === 'cancel' || !token) {
-    dispatch({ type: FACEBOOK_LOGIN_FAIL })
+    failFacebookLogin(dispatch)
     return
   }
 
   await AsyncStorage.setItem('fb_token', token)
-  dispatch({ type: FACEBOOK_LOGIN_SUCCESS, payload: token })
+  sucessFacebookLogin(dispatch, token)
 }
