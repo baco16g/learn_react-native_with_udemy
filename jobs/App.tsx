@@ -4,6 +4,9 @@ import {
   createBottomTabNavigator,
   createStackNavigator
 } from 'react-navigation'
+import { Provider } from 'react-redux'
+
+import store from './src/store'
 
 import AuthScreen from './src/screens/AuthScreen'
 import WelcomeScreen from './src/screens/WelcomeScreen'
@@ -31,9 +34,11 @@ export default () => {
   })
 
   return (
-    <View style={styles.container}>
-      <MainNavigator />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <MainNavigator />
+      </View>
+    </Provider>
   )
 }
 
