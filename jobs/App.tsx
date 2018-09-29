@@ -16,22 +16,30 @@ import SettingScreen from './src/screens/SettingScreen'
 import ReviewScreen from './src/screens/ReviewScreen'
 
 export default () => {
-  const MainNavigator = createBottomTabNavigator({
-    welcome: { screen: WelcomeScreen },
-    auth: { screen: AuthScreen },
-    main: {
-      screen: createBottomTabNavigator({
-        map: MapScreen,
-        deck: DeckScreen,
-        review: {
-          screen: createStackNavigator({
-            review: { screen: ReviewScreen },
-            settings: { screen: SettingScreen }
-          })
-        }
-      })
+  const MainNavigator = createBottomTabNavigator(
+    {
+      welcome: { screen: WelcomeScreen },
+      auth: { screen: AuthScreen },
+      main: {
+        screen: createBottomTabNavigator({
+          map: MapScreen,
+          deck: DeckScreen,
+          review: {
+            screen: createStackNavigator({
+              review: { screen: ReviewScreen },
+              settings: { screen: SettingScreen }
+            })
+          }
+        })
+      }
+    },
+    {
+      navigationOptions: {
+        tabBarVisible: false
+      },
+      lazy: true
     }
-  })
+  )
 
   return (
     <Provider store={store}>
