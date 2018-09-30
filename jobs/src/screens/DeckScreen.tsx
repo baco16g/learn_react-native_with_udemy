@@ -2,23 +2,30 @@ import * as React from 'react'
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import { Dispatch, bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { compose, ComponentEnhancer } from 'recompose'
+import { compose, ComponentEnhancer, withHandlers } from 'recompose'
 import { Card } from 'react-native-elements'
 import HTML from 'react-native-render-html'
 import { MapView } from 'expo'
+import { $Call } from 'utility-types'
 import { IRootStore } from '../reducers'
 import * as actions from '../actions'
 import Swipe from '../components/Swipe'
 
-const SCREEN_WIDTH = Dimensions.get('window').width
-const SCREEN_HEIGHT = Dimensions.get('window').height
-
-interface IProps {
+type Props = {
   jobs: Job[]
+} & IPropsConnected &
+  IHandler
+
+interface IPropsConnected
+  extends $Call<typeof mapDispatchToProps>,
+    $Call<typeof mapStateToProps> {}
+
+interface IHandler {
+  onSwipeRight: (job: Job) => void
 }
 
-const DeckScreen = ({ jobs }: IProps) => {
-  const renderCard = (job: SwipeItem | Job) => (
+const DeckScreen = ({ jobs, onSwipeRight }: Props) => {
+  const renderCard = (job: Job) => (
     <Card title={job.title}>
       {job.company_logo && <Image source={{ uri: job.company_logo }} />}
       <View style={styles.detailWrapper}>
@@ -44,7 +51,7 @@ const DeckScreen = ({ jobs }: IProps) => {
         renderCard={renderCard}
         renderNoMoreCards={renderNoMoreCards}
         onSwipeLeft={() => ({})}
-        onSwipeRight={() => ({})}
+        onSwipeRight={onSwipeRight}
       />
     </View>
   )
@@ -60,11 +67,16 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }
 })
 
-const enhancer: ComponentEnhancer<IProps, {}> = compose(
+const enhancer: ComponentEnhancer<Props, {}> = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )
+  ),
+  withHandlers<IPropsConnected, IHandler>({
+    onSwipeRight: ({ actions: { likeJob } }) => (item: Job) => {
+      likeJob({ job: item })
+    }
+  })
 )
 
 const styles = StyleSheet.create({
