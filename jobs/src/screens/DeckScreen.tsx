@@ -1,14 +1,92 @@
 import * as React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
+import { Dispatch, bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { compose, ComponentEnhancer, withHandlers } from 'recompose'
+import { Card, Button } from 'react-native-elements'
+import HTML from 'react-native-render-html'
+import { MapView } from 'expo'
+import { IRootStore } from '../reducers'
+import Swipe from '../components/Swipe'
 
-const DeckScreen = () => (
-  <View>
-    <Text>DeckScreen</Text>
-    <Text>DeckScreen</Text>
-    <Text>DeckScreen</Text>
-    <Text>DeckScreen</Text>
-    <Text>DeckScreen</Text>
-  </View>
+const SCREEN_WIDTH = Dimensions.get('window').width
+const SCREEN_HEIGHT = Dimensions.get('window').height
+
+interface IProps {
+  jobs: Job[]
+}
+
+const DeckScreen = ({ jobs }: IProps) => {
+  const renderCard = (job: SwipeItem | Job) => (
+    <Card title={job.title} wrapperStyle={styles.card}>
+      {job.company_logo && <Image source={{ uri: job.company_logo }} />}
+      <View style={styles.detailWrapper}>
+        <Text>{job.company}</Text>
+        <Text>{job.location}</Text>
+      </View>
+      <View style={styles.applyWrapper}>
+        <Text style={styles.heading}>How to apply</Text>
+        <HTML html={job.how_to_apply} />
+      </View>
+    </Card>
+  )
+  const renderNoMoreCards = () => (
+    <Card title="No More Card" wrapperStyle={styles.card}>
+      <Text>Not Found</Text>
+    </Card>
+  )
+
+  return (
+    <View style={styles.swiper}>
+      <Swipe
+        data={jobs}
+        renderCard={renderCard}
+        renderNoMoreCards={renderNoMoreCards}
+        onSwipeLeft={() => ({})}
+        onSwipeRight={() => ({})}
+      />
+    </View>
+  )
+}
+
+const mapStateToProps = ({ job }: IRootStore) => ({
+  jobs: job.list
+})
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({})
+
+const enhancer: ComponentEnhancer<IProps, {}> = compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )
 
-export default DeckScreen
+const styles = StyleSheet.create({
+  swiper: {
+    marginTop: SCREEN_HEIGHT * 0.25
+  },
+  card: {
+    height: SCREEN_HEIGHT * 0.5
+  },
+  detailWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+    marginBottom: 30,
+    paddingBottom: 15,
+    borderBottomWidth: 1
+  },
+  applyWrapper: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+    marginBottom: 30
+  },
+  heading: {
+    fontWeight: 'bold',
+    fontSize: 16
+  }
+})
+
+export default enhancer(DeckScreen)
