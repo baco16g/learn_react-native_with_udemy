@@ -7,6 +7,7 @@ import { Card, Button } from 'react-native-elements'
 import HTML from 'react-native-render-html'
 import { MapView } from 'expo'
 import { IRootStore } from '../reducers'
+import * as actions from '../actions'
 import Swipe from '../components/Swipe'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -53,7 +54,11 @@ const mapStateToProps = ({ job }: IRootStore) => ({
   jobs: job.list
 })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({})
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  actions: {
+    ...bindActionCreators(actions, dispatch)
+  }
+})
 
 const enhancer: ComponentEnhancer<IProps, {}> = compose(
   connect(
