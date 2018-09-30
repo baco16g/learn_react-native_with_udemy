@@ -6,6 +6,7 @@ import { compose, ComponentEnhancer, withHandlers } from 'recompose'
 import { Card } from 'react-native-elements'
 import HTML from 'react-native-render-html'
 import { MapView } from 'expo'
+import FitImage from 'react-native-fit-image'
 import { $Call } from 'utility-types'
 import { IRootStore } from '../reducers'
 import * as actions from '../actions'
@@ -27,7 +28,13 @@ interface IHandler {
 const DeckScreen = ({ jobs, onSwipeRight }: Props) => {
   const renderCard = (job: Job) => (
     <Card title={job.title}>
-      {job.company_logo && <Image source={{ uri: job.company_logo }} />}
+      {job.company_logo && (
+        <FitImage
+          source={{ uri: job.company_logo }}
+          resizeMode="contain"
+          style={styles.logo}
+        />
+      )}
       <View style={styles.detailWrapper}>
         <Text>{job.company}</Text>
         <Text>{job.location}</Text>
@@ -82,6 +89,14 @@ const enhancer: ComponentEnhancer<Props, {}> = compose(
 const styles = StyleSheet.create({
   swiper: {
     marginTop: 30
+  },
+  logo: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 100,
+    marginBottom: 30
   },
   detailWrapper: {
     flexDirection: 'row',
