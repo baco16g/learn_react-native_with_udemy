@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, ActivityIndicator } from 'react-native'
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import {
   compose,
   ComponentEnhancer,
@@ -9,9 +9,24 @@ import {
   withStateHandlers,
   StateHandlerMap
 } from 'recompose'
+import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 import { MapView } from 'expo'
+import { Button } from 'react-native-elements'
+import { NavigationScreenProp } from 'react-navigation'
+import { $Call } from 'utility-types'
 
-type Props = IState & StateUpdater
+import * as actions from '../actions'
+
+type Props = IOuterProps & IState & StateUpdater
+
+interface IOuterProps {
+  navigation: NavigationScreenProp<any>
+}
+
+interface IPropsConnected
+  extends $Call<typeof mapDispatchToProps>,
+    $Call<typeof mapStateToProps> {}
 
 interface IState {
   region: Region
@@ -22,7 +37,16 @@ type StateUpdater = StateHandlerMap<IState> & {
   onRegionChangeComplete: (region: Region) => void
 }
 
-const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: Props) =>
+interface IHandler {
+  onButtonPress: () => void
+}
+
+const MapScreen = ({
+  region,
+  mapLoaded,
+  onRegionChangeComplete,
+  onButtonPress
+}: Props) =>
   mapLoaded ? (
     <View style={{ flex: 1 }}>
       <MapView
@@ -30,6 +54,15 @@ const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: Props) =>
         onRegionChangeComplete={onRegionChangeComplete}
         style={{ flex: 1 }}
       />
+      <View style={styles.buttonContainer}>
+        <Button
+          large
+          title="Search this Area"
+          icon={{ name: 'search' }}
+          backgroundColor="#009688"
+          onPress={onButtonPress}
+        />
+      </View>
     </View>
   ) : (
     <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -37,7 +70,19 @@ const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: Props) =>
     </View>
   )
 
-const enhancer: ComponentEnhancer<Props, {}> = compose(
+const mapStateToProps = () => ({})
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  actions: {
+    ...bindActionCreators(actions, dispatch)
+  }
+})
+
+const enhancer: ComponentEnhancer<Props, IOuterProps> = compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  ),
   withStateHandlers<IState, StateUpdater>(
     {
       region: {
@@ -54,11 +99,27 @@ const enhancer: ComponentEnhancer<Props, {}> = compose(
       })
     }
   ),
+  withHandlers<IOuterProps & IPropsConnected & IState, IHandler>({
+    onButtonPress: ({ actions: { fetchJobs }, region, navigation }) => () => {
+      fetchJobs(region, () => {
+        navigation.navigate('deck')
+      })
+    }
+  }),
   lifecycle({
     componentDidMount() {
       this.setState({ mapLoaded: true })
     }
   })
 )
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0
+  }
+})
 
 export default enhancer(MapScreen)
