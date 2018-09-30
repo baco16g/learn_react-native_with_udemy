@@ -2,7 +2,7 @@ import { reducerWithInitialState } from 'typescript-fsa-reducers'
 import * as asyncActions from '../actions/job/async'
 
 export interface IState {
-  list: [] | Job[]
+  list: Job[]
 }
 
 const initialState: IState = {

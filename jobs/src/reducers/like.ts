@@ -3,7 +3,7 @@ import _ from 'lodash'
 import * as actions from '../actions/like'
 
 export interface IState {
-  list: [] | Job[]
+  list: Job[]
 }
 
 const initialState: IState = {
