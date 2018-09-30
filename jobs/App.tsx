@@ -5,6 +5,7 @@ import {
   createStackNavigator
 } from 'react-navigation'
 import { Provider } from 'react-redux'
+import { Icon } from 'react-native-elements'
 
 import store from './src/store'
 
@@ -21,16 +22,46 @@ export default () => {
       welcome: { screen: WelcomeScreen },
       auth: { screen: AuthScreen },
       main: {
-        screen: createBottomTabNavigator({
-          map: MapScreen,
-          deck: DeckScreen,
-          review: {
-            screen: createStackNavigator({
-              review: { screen: ReviewScreen },
-              settings: { screen: SettingScreen }
-            })
+        screen: createBottomTabNavigator(
+          {
+            map: {
+              screen: MapScreen,
+              navigationOptions: {
+                title: 'Map',
+                tabBarIcon: ({ tintColor }: { tintColor: string }) => (
+                  <Icon name="my-location" size={24} color={tintColor} />
+                )
+              }
+            },
+            deck: {
+              screen: DeckScreen,
+              navigationOptions: {
+                title: 'Jobs',
+                tabBarIcon: ({ tintColor }: { tintColor: string }) => (
+                  <Icon name="description" size={24} color={tintColor} />
+                )
+              }
+            },
+            review: {
+              screen: createStackNavigator({
+                review: ReviewScreen,
+                settings: SettingScreen
+              }),
+              navigationOptions: {
+                title: 'Review Jobs',
+                tabBarIcon: ({ tintColor }: { tintColor: string }) => (
+                  <Icon name="favorite" size={24} color={tintColor} />
+                )
+              }
+            }
+          },
+          {
+            tabBarPosition: 'bottom',
+            tabBarOptions: {
+              labelStyle: { fontSize: 12 }
+            }
           }
-        })
+        )
       }
     },
     {
