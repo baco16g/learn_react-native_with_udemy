@@ -6,29 +6,23 @@ import {
   withState,
   lifecycle,
   withHandlers,
-  withStateHandlers
+  withStateHandlers,
+  StateHandlerMap
 } from 'recompose'
 import { MapView } from 'expo'
 
-interface IProps extends IState, IStateUpdater {}
-
-interface IRegion {
-  longitude: number
-  latitude: number
-  longitudeDelta: number
-  latitudeDelta: number
-}
+type Props = IState & StateUpdater
 
 interface IState {
-  region: IRegion
+  region: Region
   mapLoaded: boolean
 }
 
-interface IStateUpdater {
-  onRegionChangeComplete: (region: IRegion) => void
+type StateUpdater = StateHandlerMap<IState> & {
+  onRegionChangeComplete: (region: Region) => void
 }
 
-const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: IProps) =>
+const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: Props) =>
   mapLoaded ? (
     <View style={{ flex: 1 }}>
       <MapView
@@ -43,19 +37,19 @@ const MapScreen = ({ region, mapLoaded, onRegionChangeComplete }: IProps) =>
     </View>
   )
 
-const enhancer: ComponentEnhancer<IProps, {}> = compose(
-  withState('mapLoaded', '', false),
-  withStateHandlers(
+const enhancer: ComponentEnhancer<Props, {}> = compose(
+  withStateHandlers<IState, StateUpdater>(
     {
       region: {
         longitude: -122,
         latitude: 37,
         longitudeDelta: 0.04,
         latitudeDelta: 0.09
-      }
+      },
+      mapLoaded: false
     },
     {
-      onRegionChangeComplete: () => (region: IRegion) => ({
+      onRegionChangeComplete: () => region => ({
         region
       })
     }
