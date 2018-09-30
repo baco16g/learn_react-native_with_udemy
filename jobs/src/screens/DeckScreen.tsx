@@ -3,7 +3,8 @@ import { View, Text, StyleSheet } from 'react-native'
 import { Dispatch, bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { compose, ComponentEnhancer, withHandlers } from 'recompose'
-import { Card } from 'react-native-elements'
+import { NavigationScreenProp } from 'react-navigation'
+import { Card, Button } from 'react-native-elements'
 import HTML from 'react-native-render-html'
 import FitImage from 'react-native-fit-image'
 import { $Call } from 'utility-types'
@@ -13,8 +14,13 @@ import Swipe from '../components/Swipe'
 
 type Props = {
   jobs: Job[]
-} & IPropsConnected &
+} & IOuterProps &
+  IPropsConnected &
   IHandler
+
+interface IOuterProps {
+  navigation: NavigationScreenProp<any>
+}
 
 interface IPropsConnected
   extends $Call<typeof mapDispatchToProps>,
@@ -22,9 +28,10 @@ interface IPropsConnected
 
 interface IHandler {
   onSwipeRight: (job: Job) => void
+  onNavigateToMap: () => void
 }
 
-const DeckScreen = ({ jobs, onSwipeRight }: Props) => {
+const DeckScreen = ({ jobs, onSwipeRight, onNavigateToMap }: Props) => {
   const renderCard = (job: Job) => (
     <Card title={job.title}>
       {job.company_logo && (
@@ -45,8 +52,14 @@ const DeckScreen = ({ jobs, onSwipeRight }: Props) => {
     </Card>
   )
   const renderNoMoreCards = () => (
-    <Card title="No More Card">
-      <Text>Not Found</Text>
+    <Card title="No More Jobs">
+      <Button
+        title="Back to Map"
+        large
+        icon={{ name: 'my-location' }}
+        backgroundColor="#03A9F4"
+        onPress={onNavigateToMap}
+      />
     </Card>
   )
 
@@ -73,14 +86,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   }
 })
 
-const enhancer: ComponentEnhancer<Props, {}> = compose(
+const enhancer: ComponentEnhancer<Props, IOuterProps> = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withHandlers<IPropsConnected, IHandler>({
+  withHandlers<IOuterProps & IPropsConnected, IHandler>({
     onSwipeRight: ({ actions: { likeJob } }) => (item: Job) => {
       likeJob({ job: item })
+    },
+    onNavigateToMap: ({ navigation }) => () => {
+      navigation.navigate('map')
     }
   })
 )
