@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, ActivityIndicator, StyleSheet } from 'react-native'
 import {
   compose,
   ComponentEnhancer,
-  withState,
   lifecycle,
   withHandlers,
   withStateHandlers,

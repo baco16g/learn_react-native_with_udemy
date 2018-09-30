@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { NavigationScreenProp } from 'react-navigation'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
