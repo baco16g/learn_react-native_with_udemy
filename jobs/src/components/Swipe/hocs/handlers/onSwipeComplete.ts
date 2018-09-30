@@ -1,12 +1,12 @@
 import { Animated } from 'react-native'
 
 interface IProps {
-  data: DataItem[]
+  data: SwipeItem[]
   position: Animated.ValueXY
   currentIndex: number
   incrementIndex: () => { currentIndex: number }
-  onSwipeLeft: (item: DataItem) => void
-  onSwipeRight: (item: DataItem) => void
+  onSwipeLeft: (item: SwipeItem) => void
+  onSwipeRight: (item: SwipeItem) => void
 }
 
 const onSwipeCompleteHandler = ({
