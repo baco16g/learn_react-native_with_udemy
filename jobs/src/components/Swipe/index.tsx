@@ -30,12 +30,14 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH
 const SWIPE_OUT_DURATION = 250
 
+type Item = any & { id: string }
+
 interface IOuterProps {
-  data: SwipeItem[]
-  renderCard: (item: SwipeItem) => JSX.Element
+  data: Item[]
+  renderCard: (item: Item) => JSX.Element
   renderNoMoreCards: () => JSX.Element
-  onSwipeRight: (item: SwipeItem) => void
-  onSwipeLeft: (item: SwipeItem) => void
+  onSwipeRight: (item: Item) => void
+  onSwipeLeft: (item: Item) => void
 }
 
 interface IProps extends IOuterProps, InnerProps, IWithHandlers {}
