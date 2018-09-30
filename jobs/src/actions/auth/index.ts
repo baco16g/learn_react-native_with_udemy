@@ -8,17 +8,17 @@ import * as config from '../../../config.json'
 export const facebookLogin = () => async (dispatch: Dispatch) => {
   const token = await AsyncStorage.getItem('fb_token')
   if (token) {
-    sucessFacebookLogin(dispatch, token)
+    sucessFacebookLogin(dispatch, { token })
   } else {
     doFacebookLogin(dispatch)
   }
 }
 
-const sucessFacebookLogin = (dispatch: Dispatch, token: string) => {
+const sucessFacebookLogin = (dispatch: Dispatch, result: { token: string }) => {
   dispatch(
     asyncActions.facebookLogin.done({
       params: null,
-      result: { token }
+      result
     })
   )
 }
@@ -46,5 +46,5 @@ const doFacebookLogin = async (dispatch: Dispatch) => {
   }
 
   await AsyncStorage.setItem('fb_token', token)
-  sucessFacebookLogin(dispatch, token)
+  sucessFacebookLogin(dispatch, { token })
 }
