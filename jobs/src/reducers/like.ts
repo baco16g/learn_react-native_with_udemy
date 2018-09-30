@@ -10,10 +10,12 @@ const initialState: IState = {
   list: []
 }
 
-export const reducer = reducerWithInitialState(initialState).case(
-  actions.likeJob,
-  (state, { job }) => ({
+export const reducer = reducerWithInitialState(initialState)
+  .case(actions.likeJob, (state, { job }) => ({
     ...state,
     list: _.uniqBy([job, ...state.list], 'id')
-  })
-)
+  }))
+  .case(actions.clearLikedJobs, state => ({
+    ...state,
+    list: []
+  }))
