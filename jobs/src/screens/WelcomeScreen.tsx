@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, AsyncStorage } from 'react-native'
+import { AsyncStorage } from 'react-native'
 import {
   compose,
   ComponentEnhancer,

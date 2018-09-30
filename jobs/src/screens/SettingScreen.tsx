@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Text, Platform } from 'react-native'
+import { View, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch, bindActionCreators } from 'redux'
 import { compose, ComponentEnhancer, withHandlers, setStatic } from 'recompose'
