@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { Dispatch, bindActionCreators } from 'redux'
-import { compose, ComponentEnhancer, withHandlers } from 'recompose'
+import { compose, ComponentEnhancer, withHandlers, setStatic } from 'recompose'
 import { $Call } from 'utility-types'
 import { Button } from 'react-native-elements'
 import { IRootStore } from '../reducers'
@@ -19,7 +19,7 @@ interface IHandlers {
 }
 
 const SettingScreen = ({ clearLikedJobs }: Props) => (
-  <View>
+  <View style={{ marginTop: 20 }}>
     <Button
       title="Reset Liked Jobs"
       large
@@ -39,6 +39,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 })
 
 const enhancer: ComponentEnhancer<Props, {}> = compose(
+  setStatic('navigationOptions', {
+    headerStyle: {
+      marginTop: Platform.OS === 'android' ? 24 : 0
+    }
+  }),
   connect(
     mapStateToProps,
     mapDispatchToProps
