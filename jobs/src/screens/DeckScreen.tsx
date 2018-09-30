@@ -25,14 +25,14 @@ const DeckScreen = ({ jobs }: IProps) => {
         <Text>{job.company}</Text>
         <Text>{job.location}</Text>
       </View>
-      <View style={styles.applyWrapper}>
-        <Text style={styles.heading}>How to apply</Text>
-        <HTML html={job.how_to_apply} />
+      <View style={styles.descWrapper}>
+        <Text style={styles.heading}>Description</Text>
+        <HTML html={job.description} />
       </View>
     </Card>
   )
   const renderNoMoreCards = () => (
-    <Card title="No More Card" wrapperStyle={styles.card}>
+    <Card title="No More Card">
       <Text>Not Found</Text>
     </Card>
   )
@@ -69,10 +69,7 @@ const enhancer: ComponentEnhancer<IProps, {}> = compose(
 
 const styles = StyleSheet.create({
   swiper: {
-    marginTop: SCREEN_HEIGHT * 0.25
-  },
-  card: {
-    height: SCREEN_HEIGHT * 0.5
+    marginTop: 30
   },
   detailWrapper: {
     flexDirection: 'row',
@@ -82,7 +79,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     borderBottomWidth: 1
   },
-  applyWrapper: {
+  descWrapper: {
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignContent: 'center',
