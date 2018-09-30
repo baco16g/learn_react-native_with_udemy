@@ -19,7 +19,7 @@ interface IProps {
 
 const DeckScreen = ({ jobs }: IProps) => {
   const renderCard = (job: SwipeItem | Job) => (
-    <Card title={job.title} wrapperStyle={styles.card}>
+    <Card title={job.title}>
       {job.company_logo && <Image source={{ uri: job.company_logo }} />}
       <View style={styles.detailWrapper}>
         <Text>{job.company}</Text>
