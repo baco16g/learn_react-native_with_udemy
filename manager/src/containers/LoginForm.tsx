@@ -89,20 +89,14 @@ const enhancer: ComponentEnhancer<IProps, {}> = compose(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withHandlers({
-    onChangeEmail: ({ actions }: IPropsConnected) => (value: string): void => {
+  withHandlers<IPropsConnected, IHandelrs>({
+    onChangeEmail: ({ actions }) => (value: string): void => {
       actions.changeValue({ prop: 'email', value })
     },
-    onChangePassword: ({ actions }: IPropsConnected) => (
-      value: string
-    ): void => {
+    onChangePassword: ({ actions }) => (value: string): void => {
       actions.changeValue({ prop: 'password', value })
     },
-    onLoginUser: ({
-      actions,
-      email,
-      password
-    }: IPropsConnected) => (): void => {
+    onLoginUser: ({ actions, email, password }) => (): void => {
       actions.loginUser({ email, password })
     }
   })

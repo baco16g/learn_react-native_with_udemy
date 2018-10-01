@@ -62,13 +62,8 @@ const enhancer: ComponentEnhancer<IProps, {}> = compose(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withHandlers({
-    onButtonPress: ({
-      actions,
-      name,
-      phone,
-      shift
-    }: IPropsConnected) => (): void => {
+  withHandlers<IPropsConnected, IHandelrs>({
+    onButtonPress: ({ actions, name, phone, shift }) => (): void => {
       actions.employeeCreate({ name, phone, shift })
     }
   })

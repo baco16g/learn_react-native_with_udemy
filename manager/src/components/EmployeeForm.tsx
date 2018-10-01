@@ -73,20 +73,14 @@ const styles = StyleSheet.create({
 })
 
 const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
-  withHandlers({
-    onChangeName: ({ employeeUpdate }: IOuterProps) => (
-      value: string
-    ): void => {
+  withHandlers<IOuterProps, IHandelrs>({
+    onChangeName: ({ employeeUpdate }) => (value: string): void => {
       employeeUpdate({ prop: 'name', value })
     },
-    onChangePhone: ({ employeeUpdate }: IOuterProps) => (
-      value: string
-    ): void => {
+    onChangePhone: ({ employeeUpdate }) => (value: string): void => {
       employeeUpdate({ prop: 'phone', value })
     },
-    onChangeShift: ({ employeeUpdate }: IOuterProps) => (
-      value: string
-    ): void => {
+    onChangeShift: ({ employeeUpdate }) => (value: string): void => {
       employeeUpdate({ prop: 'shift', value })
     }
   })

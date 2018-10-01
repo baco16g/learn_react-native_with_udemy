@@ -4,7 +4,8 @@ import {
   ComponentEnhancer,
   compose,
   lifecycle,
-  withStateHandlers
+  withStateHandlers,
+  StateHandlerMap
 } from 'recompose'
 import { connect } from 'react-redux'
 import { Dispatch, bindActionCreators } from 'redux'
@@ -21,18 +22,18 @@ interface IPropsConnected
     $Call<typeof mapStateToProps> {}
 
 interface IState {
-  dataSource: ListViewDataSource
+  dataSource: ListViewDataSource | null
 }
 
-interface IStateHandlers {
+type Updater = StateHandlerMap<IState> & {
   createDataSource: (
     employees: IEmployee[]
   ) => { dataSource: ListViewDataSource }
 }
 
-interface IProps extends IPropsConnected, IState, IStateHandlers {}
+type Props = IPropsConnected & IState & Updater
 
-const EmployeeList = ({ dataSource }: IProps) => {
+const EmployeeList = ({ dataSource }: Props) => {
   const renderRow = (employee: IEmployee) => {
     return (
       <ListItem
@@ -72,15 +73,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const enhancer: ComponentEnhancer<IProps, {}> = compose(
+const enhancer: ComponentEnhancer<Props, {}> = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withStateHandlers(
-    ({ dataSource = null }: { dataSource: null | ListViewDataSource }) => ({
-      dataSource
-    }),
+  withStateHandlers<IState, Updater>(
+    {
+      dataSource: null
+    },
     {
       createDataSource: () => (employees: IEmployee[]) => {
         const ds = new ListView.DataSource({
@@ -92,7 +93,7 @@ const enhancer: ComponentEnhancer<IProps, {}> = compose(
       }
     }
   ),
-  lifecycle<IPropsConnected & IStateHandlers, {}>({
+  lifecycle<IPropsConnected & Updater, {}>({
     componentWillMount() {
       this.props.actions.addEventForEmployeesFetch()
       this.props.createDataSource(this.props.employees)

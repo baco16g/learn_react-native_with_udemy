@@ -7,7 +7,8 @@ import {
   compose,
   withHandlers,
   lifecycle,
-  withStateHandlers
+  withStateHandlers,
+  StateHandlerMap
 } from 'recompose'
 import { connect } from 'react-redux'
 import { Dispatch, bindActionCreators } from 'redux'
@@ -25,6 +26,10 @@ interface IPropsConnected
   extends $Call<typeof mapDispatchToProps>,
     $Call<typeof mapStateToProps> {}
 
+interface IState {
+  showModal: boolean
+}
+
 interface IHandlers {
   onButtonPress: () => void
   onTextPress: () => void
@@ -32,20 +37,11 @@ interface IHandlers {
   onDecline: () => void
 }
 
-interface IState {
-  showModal: boolean
-}
-
-interface IStateHandlers {
+type Updater = StateHandlerMap<IState> & {
   onToggleConfirm: () => void
 }
 
-interface IProps
-  extends IOuterProps,
-    IPropsConnected,
-    IHandlers,
-    IState,
-    IStateHandlers {}
+type Props = IOuterProps & IPropsConnected & Updater & IState & IHandlers
 
 const EmployeeEdit = ({
   name,
@@ -58,7 +54,7 @@ const EmployeeEdit = ({
   onDecline,
   onToggleConfirm,
   showModal
-}: IProps) => {
+}: Props) => {
   return (
     <Card>
       <EmployeeForm
@@ -107,12 +103,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   }
 }
 
-const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
+const enhancer: ComponentEnhancer<Props, IOuterProps> = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
   ),
-  withStateHandlers(
+  withStateHandlers<IState, Updater>(
     { showModal: false },
     {
       onToggleConfirm: ({ showModal }) => () => ({
@@ -120,35 +116,21 @@ const enhancer: ComponentEnhancer<IProps, IOuterProps> = compose(
       })
     }
   ),
-  withHandlers({
-    onButtonPress: ({
-      actions,
-      name,
-      phone,
-      shift,
-      employee
-    }: IOuterProps & IPropsConnected & IStateHandlers) => (): void => {
+  withHandlers<IOuterProps & IPropsConnected & IState & Updater, IHandlers>({
+    onButtonPress: ({ actions, name, phone, shift, employee }) => (): void => {
       actions.employeeSave({ name, phone, shift, uid: employee.uid })
     },
-    onTextPress: ({
-      phone,
-      shift
-    }: IOuterProps & IPropsConnected & IStateHandlers) => (): void => {
+    onTextPress: ({ phone, shift }) => (): void => {
       Comminications.text(phone, `Your upcoming shift is on ${shift}`)
     },
-    onAccept: ({
-      actions,
-      employee
-    }: IOuterProps & IPropsConnected & IStateHandlers) => (): void => {
+    onAccept: ({ actions, employee }) => (): void => {
       actions.employeeDelete({ uid: employee.uid })
     },
-    onDecline: ({
-      onToggleConfirm
-    }: IOuterProps & IPropsConnected & IStateHandlers) => (): void => {
+    onDecline: ({ onToggleConfirm }) => (): void => {
       onToggleConfirm()
     }
   }),
-  lifecycle<IOuterProps & IPropsConnected & IHandlers & IStateHandlers, {}>({
+  lifecycle<IOuterProps & IPropsConnected & IHandlers & Updater, {}>({
     componentWillMount() {
       _.each(this.props.employee, (value, prop) => {
         this.props.actions.employeeUpdate({ prop, value })
