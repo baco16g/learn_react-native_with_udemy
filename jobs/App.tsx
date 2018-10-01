@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Alert } from 'react-native'
 import {
   createBottomTabNavigator,
   createStackNavigator
@@ -7,7 +7,10 @@ import {
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Icon } from 'react-native-elements'
+import { compose, lifecycle } from 'recompose'
+import { Notifications } from 'expo'
 
+import registerForNotifications from './services/push_notifications'
 import store, { persistor } from './src/store'
 
 import AuthScreen from './src/screens/AuthScreen'
@@ -17,7 +20,7 @@ import DeckScreen from './src/screens/DeckScreen'
 import SettingScreen from './src/screens/SettingScreen'
 import ReviewScreen from './src/screens/ReviewScreen'
 
-export default () => {
+const App = () => {
   const MainNavigator = createBottomTabNavigator(
     {
       welcome: { screen: WelcomeScreen },
@@ -84,6 +87,23 @@ export default () => {
   )
 }
 
+const enhancer = compose(
+  lifecycle({
+    componentDidMount() {
+      registerForNotifications()
+      Notifications.addListener(notification => {
+        const {
+          data: { text },
+          origin
+        } = notification
+        if (origin === 'received' && text) {
+          Alert.alert('New Push Notification', text, [{ text: 'Ok.' }])
+        }
+      })
+    }
+  })
+)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -92,3 +112,5 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   }
 })
+
+export default enhancer(App)
