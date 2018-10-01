@@ -5,9 +5,10 @@ import {
   createStackNavigator
 } from 'react-navigation'
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 import { Icon } from 'react-native-elements'
 
-import store from './src/store'
+import store, { persistor } from './src/store'
 
 import AuthScreen from './src/screens/AuthScreen'
 import WelcomeScreen from './src/screens/WelcomeScreen'
@@ -74,9 +75,11 @@ export default () => {
 
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <MainNavigator />
-      </View>
+      <PersistGate loading={null} persistor={persistor}>
+        <View style={styles.container}>
+          <MainNavigator />
+        </View>
+      </PersistGate>
     </Provider>
   )
 }
